@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">CalendarListview</string>
+    <string name="sans_serif" translatable="false">sans-serif</string>
+    <string name="today_txt">今天</string>
+    <string name="check_in_txt">入住</string>
+    <string name="check_out_txt">离店</string>
+</resources>
