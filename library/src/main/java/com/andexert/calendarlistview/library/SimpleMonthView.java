@@ -23,6 +23,7 @@
  ***********************************************************************************/
 package com.andexert.calendarlistview.library;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.res.Resources;
 import android.content.res.TypedArray;
@@ -33,6 +34,7 @@ import android.graphics.Paint.Style;
 import android.graphics.Path;
 import android.graphics.RectF;
 import android.graphics.Typeface;
+import android.support.annotation.ColorInt;
 import android.text.format.DateUtils;
 import android.text.format.Time;
 import android.util.Log;
@@ -223,8 +225,8 @@ class SimpleMonthView extends View {
             if ((mMonth == mSelectedBeginMonth && mSelectedBeginDay == day && mSelectedBeginYear == mYear) || (mMonth == mSelectedLastMonth && mSelectedLastDay == day && mSelectedLastYear == mYear)) {
                 if (mDrawRect) {
                     Log.d("sie", "day num 0 - origin = " + mYear + ", " + mMonth + ", " + day);
-//                    Log.d("sie", "begin - slt " + mSelectedBeginYear + ", " + mSelectedBeginMonth + ", " + mSelectedBeginDay);
-//                    Log.d("sie", "last - slt " + mSelectedLastYear + ", " + mSelectedLastMonth + ", " + mSelectedLastDay);
+                    Log.d("sie", "begin - slt " + mSelectedBeginYear + ", " + mSelectedBeginMonth + ", " + mSelectedBeginDay);
+                    Log.d("sie", "last - slt " + mSelectedLastYear + ", " + mSelectedLastMonth + ", " + mSelectedLastDay);
                     RectF rectF = new RectF(x - DAY_SELECTED_CIRCLE_SIZE, (y - MINI_DAY_NUMBER_TEXT_SIZE / 3) - DAY_SELECTED_CIRCLE_SIZE, x + DAY_SELECTED_CIRCLE_SIZE, (y - MINI_DAY_NUMBER_TEXT_SIZE / 3) + DAY_SELECTED_CIRCLE_SIZE);
                     //canvas.drawRoundRect(rectF, 10.0f, 10.0f, mSelectedCirclePaint);
                     Path path = new Path();
@@ -233,21 +235,34 @@ class SimpleMonthView extends View {
                             (mSelectedLastYear > mSelectedBeginYear) || (mSelectedLastYear == mSelectedBeginYear && mSelectedLastMonth > mSelectedBeginMonth) ||
                                     (mSelectedLastYear == mSelectedBeginYear && mSelectedBeginMonth == mSelectedLastMonth && mSelectedLastDay >= mSelectedBeginDay))
                             ) {//结束日期
-                        if (mSelectedLastDay != -1 && mSelectedLastDay == mSelectedBeginDay) {
+                        if (mSelectedLastDay != -1 && day == mSelectedLastDay && mSelectedLastDay == mSelectedBeginDay) {
                             //左上角，右上角，右下角，左下角xy半径
                             float[] radii = {20.0f, 20.0f, 20.0f, 20.0f, 20.0f, 20.0f, 20.0f, 20.0f};
                             path.addRoundRect(rectF, radii, Path.Direction.CW);
+                            flagDate(canvas, getContext().getString(R.string.in_out_txt), 0xffff6827, y, x);
                         } else {
                             float[] radii = {0f, 0f, 20.0f, 20.0f, 20.0f, 20.0f, 0f, 0f};
                             path.addRoundRect(rectF, radii, Path.Direction.CW);
+                            flagDate(canvas, getContext().getString(R.string.check_out_txt), 0xffff6827, y, x);
                         }
                     } else {//开始日期
-                        float[] radii = {20.0f, 20.0f, 0f, 0f, 0f, 0f, 20.0f, 20.0f};
-                        path.addRoundRect(rectF, radii, Path.Direction.CW);
+                        if (mSelectedLastDay != -1 && mSelectedBeginDay == day && (
+                                (mSelectedLastYear < mSelectedBeginYear) || (mSelectedLastYear == mSelectedBeginYear && mSelectedLastMonth < mSelectedBeginMonth) ||
+                                        (mSelectedLastYear == mSelectedBeginYear && mSelectedBeginMonth == mSelectedLastMonth && mSelectedLastDay < mSelectedBeginDay))
+                                ) {
+                            //结束位置
+                            float[] radii = {0f, 0f, 20.0f, 20.0f, 20.0f, 20.0f, 0f, 0f};
+                            path.addRoundRect(rectF, radii, Path.Direction.CW);
+                            flagDate(canvas, getContext().getString(R.string.check_out_txt), 0xffff6827, y, x);
+                        } else {//真正的开始位置
+                            float[] radii = {20.0f, 20.0f, 0f, 0f, 0f, 0f, 20.0f, 20.0f};
+                            path.addRoundRect(rectF, radii, Path.Direction.CW);
+                            flagDate(canvas, getContext().getString(R.string.check_in_txt), 0xffff6827, y, x);
+                        }
                     }
                     canvas.drawPath(path, mSelectedPointPaint);
 
-                    if (day == mSelectedLastDay && mSelectedBeginDay + 1 == day) {
+                    if ((day == mSelectedLastDay && mSelectedBeginDay + 1 == day) || (day == mSelectedBeginDay && mSelectedLastDay + 1 == day)) {
                         //右边增加宽度
                         int rightBound = x - DAY_SELECTED_CIRCLE_SIZE;
                         int miniWid = 2 * (paddingDay - DAY_SELECTED_CIRCLE_SIZE);
@@ -262,15 +277,7 @@ class SimpleMonthView extends View {
             }
             if (mHasToday && (mToday == day)) {
                 //todo 今日粗体字号
-                Paint todayP = new Paint();
-                todayP.setAntiAlias(true);
-                float todayF = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 14, getResources().getDisplayMetrics());
-                todayP.setTextSize(todayF);
-                todayP.setStyle(Style.FILL);
-                todayP.setColor(0xff7b7b7b);
-                todayP.setTextAlign(Align.CENTER);
-                todayP.setFakeBoldText(false);
-                canvas.drawText(getContext().getString(R.string.today_txt), x, y - DAY_MARGIN, todayP);
+                flagDate(canvas, getContext().getString(R.string.today_txt), 0xff7b7b7b, y, x);
                 mMonthNumPaint.setColor(mCurrentDayTextColor);
                 mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
             } else {
@@ -303,7 +310,7 @@ class SimpleMonthView extends View {
                             ((mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedBeginMonth && day < mSelectedBeginDay) || (mSelectedBeginMonth > mSelectedLastMonth && mMonth == mSelectedLastMonth && day > mSelectedLastDay)))) {
                 //同一年,同一月
                 Log.d("sie", "day num 2 - " + day);
-                if (day - 1 == mSelectedBeginDay) {
+                if (day - 1 == mSelectedBeginDay || day - 1 == mSelectedLastDay) {
                     //左边增加宽度
                     int rightBound = linkX - paddingDay;
                     int miniWid = paddingDay - DAY_SELECTED_CIRCLE_SIZE;
@@ -311,7 +318,7 @@ class SimpleMonthView extends View {
                             rightBound, (y - MINI_DAY_NUMBER_TEXT_SIZE / 3) + DAY_SELECTED_CIRCLE_SIZE);
                     canvas.drawRect(miniRF, mSelectedCirclePaint);
                 }
-                if (day + 1 == mSelectedLastDay) {
+                if (day + 1 == mSelectedLastDay || day + 1 == mSelectedBeginDay) {
                     //右边增加宽度
                     int leftBound = linkX + paddingDay;
                     int miniWid = paddingDay - DAY_SELECTED_CIRCLE_SIZE;
@@ -366,6 +373,18 @@ class SimpleMonthView extends View {
             day++;
             //Log.d("sie", "---------------------------------------------- ");
         }
+    }
+
+    private void flagDate(Canvas canvas, String flag, @ColorInt int clr, int y, int x) {
+        Paint flagP = new Paint();
+        flagP.setAntiAlias(true);
+        float flagTS = TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_SP, 12, getResources().getDisplayMetrics());
+        flagP.setTextSize(flagTS);
+        flagP.setStyle(Style.FILL);
+        flagP.setColor(clr);
+        flagP.setTextAlign(Align.CENTER);
+        flagP.setFakeBoldText(false);
+        canvas.drawText(flag, x, y - DAY_MARGIN - DAY_SELECTED_CIRCLE_SIZE, flagP);
     }
 
     public SimpleMonthAdapter.CalendarDay getDayFromLocation(float x, float y) {
@@ -462,6 +481,7 @@ class SimpleMonthView extends View {
         requestLayout();
     }
 
+    @SuppressLint("WrongConstant")
     public void setMonthParams(HashMap<String, Integer> params) {
         if (!params.containsKey(VIEW_PARAMS_MONTH) && !params.containsKey(VIEW_PARAMS_YEAR)) {
             throw new InvalidParameterException("You must specify month and year for this view");

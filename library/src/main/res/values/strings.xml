@@ -4,4 +4,5 @@
     <string name="today_txt">今天</string>
     <string name="check_in_txt">入住</string>
     <string name="check_out_txt">离店</string>
+    <string name="in_out_txt">入住/离店</string>
 </resources>
