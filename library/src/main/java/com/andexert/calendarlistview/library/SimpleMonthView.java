@@ -151,7 +151,7 @@ class SimpleMonthView extends View {
         MONTH_DAY_LABEL_TEXT_SIZE = typedArray.getDimensionPixelSize(R.styleable.DayPickerView_textSizeDayName, resources.getDimensionPixelSize(R.dimen.text_size_day_name));
         MONTH_HEADER_SIZE = typedArray.getDimensionPixelOffset(R.styleable.DayPickerView_headerMonthHeight, resources.getDimensionPixelOffset(R.dimen.header_month_height));
         DAY_SELECTED_CIRCLE_SIZE = typedArray.getDimensionPixelSize(R.styleable.DayPickerView_selectedDayRadius, resources.getDimensionPixelOffset(R.dimen.selected_day_radius));
-        isPrevDayEnabled = typedArray.getBoolean(R.styleable.DayPickerView_enablePreviousDay, true);
+        isPrevDayEnabled = typedArray.getBoolean(R.styleable.DayPickerView_enablePreviousDay, false);
 
         DAY_MARGIN = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 14, getResources().getDisplayMetrics());
         mRowHeight = ((typedArray.getDimensionPixelSize(R.styleable.DayPickerView_calendarHeight, resources.getDimensionPixelOffset(R.dimen.calendar_height)) - MONTH_HEADER_SIZE) / 6);
@@ -167,22 +167,52 @@ class SimpleMonthView extends View {
         return (dividend + (remainder > 0 ? 1 : 0));
     }
 
+    /*private enum DayOfWeek {
+        SUN(0, "周日"), MON(1, "周一"), TUE(2, "周二"), WED(3, "周三"), THU(4, "周四"), FRI(5, "周五"), SAT(6, "周六");
+
+        private int value;
+        private String day;
+
+        DayOfWeek(int value, String day) {
+            this.value = value;
+            this.day = day;
+        }
+
+        public String getDay() {
+            return day;
+        }
+
+        public int getValue() {
+            return value;
+        }
+
+        //根据枚举的int值取出string值
+        public String getWeekTxt(int i) {
+            if (i < 0 || i > 6) return "";
+            return values()[i].day;
+        }
+    }*/
+
     private void drawMonthDayLabels(Canvas canvas) {
         int y = MONTH_HEADER_SIZE - (MONTH_DAY_LABEL_TEXT_SIZE / 2);
         int dayWidthHalf = (mWidth - mPadding * 2) / (mNumDays * 2);
-
+        String[] shortWeekdays = mDateFormatSymbols.getShortWeekdays();
         for (int i = 0; i < mNumDays; i++) {
             int calendarDay = (i + mWeekStart) % mNumDays;
             int x = (2 * i + 1) * dayWidthHalf + mPadding;
             mDayLabelCalendar.set(Calendar.DAY_OF_WEEK, calendarDay);
-            canvas.drawText(mDateFormatSymbols.getShortWeekdays()[mDayLabelCalendar.get(Calendar.DAY_OF_WEEK)].toUpperCase(Locale.getDefault()), x, y, mMonthDayLabelPaint);
+            //Log.d("sie", "星期的文字 -- " + shortWeekdays[mDayLabelCalendar.get(Calendar.DAY_OF_WEEK)].toUpperCase(Locale.getDefault()));
+            canvas.drawText(shortWeekdays[mDayLabelCalendar.get(Calendar.DAY_OF_WEEK)].toUpperCase(Locale.getDefault()), x, y, mMonthDayLabelPaint);
         }
     }
+
 
     private void drawMonthTitle(Canvas canvas) {
         int x = (mWidth + 2 * mPadding) / 2;
         int y = (MONTH_HEADER_SIZE - MONTH_DAY_LABEL_TEXT_SIZE) / 2 + (MONTH_LABEL_TEXT_SIZE / 3);
         StringBuilder stringBuilder = new StringBuilder(getMonthAndYearString().toLowerCase());
+        //Log.d("sie", "月份的文字 -- " + stringBuilder.toString());
+        //Log.d("sie", "月/年  -- " + (mCalendar.get(Calendar.MONTH) + 1) + "<-> " + mCalendar.get(Calendar.YEAR));
         stringBuilder.setCharAt(0, Character.toUpperCase(stringBuilder.charAt(0)));
         canvas.drawText(stringBuilder.toString(), x, y, mMonthTitlePaint);
     }
@@ -198,6 +228,12 @@ class SimpleMonthView extends View {
         long millis = mCalendar.getTimeInMillis();
         return DateUtils.formatDateRange(getContext(), millis, millis, flags);
     }
+
+    /*private String getMonthString() {
+        int flags = DateUtils.FORMAT_SHOW_DATE | DateUtils.FORMAT_NO_YEAR | DateUtils.FORMAT_NO_MONTH_DAY;
+        long millis = mCalendar.getTimeInMillis();
+        return DateUtils.formatDateRange(getContext(), millis, millis, flags);
+    }*/
 
     private void onDayClick(SimpleMonthAdapter.CalendarDay calendarDay) {
         if (mOnDayClickListener != null && (isPrevDayEnabled || !((calendarDay.month == today.month) && (calendarDay.year == today.year) && calendarDay.day < today.monthDay))) {
@@ -225,8 +261,8 @@ class SimpleMonthView extends View {
             if ((mMonth == mSelectedBeginMonth && mSelectedBeginDay == day && mSelectedBeginYear == mYear) || (mMonth == mSelectedLastMonth && mSelectedLastDay == day && mSelectedLastYear == mYear)) {
                 if (mDrawRect) {
                     Log.d("sie", "day num 0 - origin = " + mYear + ", " + mMonth + ", " + day);
-                    Log.d("sie", "begin - slt " + mSelectedBeginYear + ", " + mSelectedBeginMonth + ", " + mSelectedBeginDay);
-                    Log.d("sie", "last - slt " + mSelectedLastYear + ", " + mSelectedLastMonth + ", " + mSelectedLastDay);
+//                    Log.d("sie", "begin - slt " + mSelectedBeginYear + ", " + mSelectedBeginMonth + ", " + mSelectedBeginDay);
+//                    Log.d("sie", "last - slt " + mSelectedLastYear + ", " + mSelectedLastMonth + ", " + mSelectedLastDay);
                     RectF rectF = new RectF(x - DAY_SELECTED_CIRCLE_SIZE, (y - MINI_DAY_NUMBER_TEXT_SIZE / 3) - DAY_SELECTED_CIRCLE_SIZE, x + DAY_SELECTED_CIRCLE_SIZE, (y - MINI_DAY_NUMBER_TEXT_SIZE / 3) + DAY_SELECTED_CIRCLE_SIZE);
                     //canvas.drawRoundRect(rectF, 10.0f, 10.0f, mSelectedCirclePaint);
                     Path path = new Path();
@@ -257,7 +293,11 @@ class SimpleMonthView extends View {
                         } else {//真正的开始位置
                             float[] radii = {20.0f, 20.0f, 0f, 0f, 0f, 0f, 20.0f, 20.0f};
                             path.addRoundRect(rectF, radii, Path.Direction.CW);
-                            flagDate(canvas, getContext().getString(R.string.check_in_txt), 0xffff6827, y, x);
+                            if (mHasToday && (mToday == day)) {
+                                flagDate(canvas, "/" + getContext().getString(R.string.check_in_txt), 0xffff6827, y, x - 20 + 2 * DAY_SELECTED_CIRCLE_SIZE);
+                            } else {
+                                flagDate(canvas, getContext().getString(R.string.check_in_txt), 0xffff6827, y, x);
+                            }
                         }
                     }
                     canvas.drawPath(path, mSelectedPointPaint);
@@ -363,7 +403,7 @@ class SimpleMonthView extends View {
                 mMonthNumPaint.setTypeface(Typeface.defaultFromStyle(Typeface.ITALIC));
             }
 
-            canvas.drawText(String.format("%d", day), x, y, mMonthNumPaint);
+            canvas.drawText(String.format(Locale.getDefault(), "%d", day), x, y, mMonthNumPaint);
 
             dayOffset++;
             if (dayOffset == mNumDays) {
@@ -466,12 +506,21 @@ class SimpleMonthView extends View {
         mWidth = w;
     }
 
+    public boolean performClick() {
+        //Calls the super implementation, which generates an AccessibilityEvent
+        //and calls the onClick() listener on the view, if any
+        return super.performClick();
+    }
+
     public boolean onTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_UP) {
             SimpleMonthAdapter.CalendarDay calendarDay = getDayFromLocation(event.getX(), event.getY());
             if (calendarDay != null) {
                 onDayClick(calendarDay);
             }
+        } else if (event.getAction() == MotionEvent.ACTION_DOWN) {
+            //Handle the action for the custom click here
+            performClick();
         }
         return true;
     }
@@ -514,6 +563,7 @@ class SimpleMonthView extends View {
         }
 
         mMonth = params.get(VIEW_PARAMS_MONTH);
+        Log.d("sie", "month from - " + mMonth);
         mYear = params.get(VIEW_PARAMS_YEAR);
 
         mHasToday = false;

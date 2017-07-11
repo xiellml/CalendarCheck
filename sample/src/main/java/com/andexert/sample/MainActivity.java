@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
 import com.andexert.calendarlistview.library.DayPickerView;
 import com.andexert.calendarlistview.library.SimpleMonthAdapter;
@@ -19,7 +20,9 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
         setContentView(R.layout.activity_main);
 
         dayPickerView = (DayPickerView) findViewById(R.id.pickerView);
-        dayPickerView.setController(this);
+        dayPickerView.setController(this, "zh");
+        Toast.makeText(this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
+        //TODO 监听确定按钮, 点击之后传送两个日期, 之后发送给网页
     }
 
 
@@ -49,12 +52,13 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
 
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {
+        //todo 隐藏第一次的toast(往左下方移动); show the second toast(淡出);
         Log.e("Day Selected", day + " / " + month + " / " + year);
     }
 
     @Override
     public void onDateRangeSelected(SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> selectedDays) {
-
+        //todo 隐藏第二次的toast(往左下方移动); 并且使确定按钮可用;
         Log.e("Date range selected", selectedDays.getFirst().toString() + " --> " + selectedDays.getLast().toString());
     }
 }

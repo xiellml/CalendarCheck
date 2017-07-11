@@ -29,6 +29,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 
+import java.util.Locale;
+
 //TODO https://github.com/BestCoderXQX/CalendarDemo
 public class DayPickerView extends RecyclerView {
     protected Context mContext;
@@ -57,7 +59,9 @@ public class DayPickerView extends RecyclerView {
         }
     }
 
-    public void setController(DatePickerController mController) {
+    public void setController(DatePickerController mController, String lang) {
+        Locale newLocale = new Locale(lang);
+        Locale.setDefault(newLocale);
         this.mController = mController;
         setUpAdapter();
         setAdapter(mAdapter);

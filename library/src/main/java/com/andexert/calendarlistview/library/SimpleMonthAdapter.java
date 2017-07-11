@@ -26,6 +26,7 @@ package com.andexert.calendarlistview.library;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
@@ -49,8 +50,9 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     public SimpleMonthAdapter(Context context, DatePickerController datePickerController, TypedArray typedArray) {
         this.typedArray = typedArray;
         calendar = Calendar.getInstance();
-        firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH));
-        lastMonth = typedArray.getInt(R.styleable.DayPickerView_lastMonth, (calendar.get(Calendar.MONTH) - 1) % MONTHS_IN_YEAR);
+        //todo Calendar日期的月份是从0开始计数的
+        firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH) + 1);
+        lastMonth = typedArray.getInt(R.styleable.DayPickerView_lastMonth, calendar.get(Calendar.MONTH) + 1);
         selectedDays = new SelectedDays<>();
         mContext = context;
         mController = datePickerController;
@@ -101,7 +103,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_DAY, selectedFirstDay);
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_DAY, selectedLastDay);
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_YEAR, year);
-        drawingParams.put(SimpleMonthView.VIEW_PARAMS_MONTH, month);
+        drawingParams.put(SimpleMonthView.VIEW_PARAMS_MONTH, month - 1);
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_WEEK_START, calendar.getFirstDayOfWeek());
         v.setMonthParams(drawingParams);
         v.invalidate();
@@ -113,15 +115,13 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     @Override
     public int getItemCount() {
-        int safeShow = mController.getMaxYear() - calendar.get(Calendar.YEAR);
-        safeShow = safeShow <= 0 ? 1 : safeShow;
-        int itemCount = ((safeShow + 1) * MONTHS_IN_YEAR);
+        int itemCount = (((mController.getMaxYear() - calendar.get(Calendar.YEAR)) + 1) * MONTHS_IN_YEAR);
 
         if (firstMonth != -1)
             itemCount -= firstMonth;
 
         if (lastMonth != -1)
-            itemCount -= (MONTHS_IN_YEAR - lastMonth) - 1;
+            itemCount -= (MONTHS_IN_YEAR - lastMonth);
 
         return itemCount;
     }
@@ -150,7 +150,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     }
 
     protected void onDayTapped(CalendarDay calendarDay) {
-        mController.onDayOfMonthSelected(calendarDay.year, calendarDay.month + 1, calendarDay.day);
+        mController.onDayOfMonthSelected(calendarDay.year, calendarDay.month, calendarDay.day);
         setSelectedDay(calendarDay);
     }
 
@@ -178,7 +178,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         private Calendar calendar;
 
         int day;
-        int month;
+        int month;//TODO month 是从0开始的
         int year;
 
         public CalendarDay() {

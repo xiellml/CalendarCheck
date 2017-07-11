@@ -26,9 +26,13 @@ package com.andexert.calendarlistview.library;
 import java.util.Calendar;
 
 
-public class CalendarUtils
-{
-	public static int getDaysInMonth(int month, int year) {
+public class CalendarUtils {
+    /**
+     * @param month 从0开始
+     * @param year  年份
+     * @return days
+     */
+    public static int getDaysInMonth(int month, int year) {
         switch (month) {
             case Calendar.JANUARY:
             case Calendar.MARCH:
@@ -48,5 +52,5 @@ public class CalendarUtils
             default:
                 throw new IllegalArgumentException("Invalid Month");
         }
-	}
+    }
 }
