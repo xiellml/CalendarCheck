@@ -51,8 +51,8 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         this.typedArray = typedArray;
         calendar = Calendar.getInstance();
         //todo Calendar日期的月份是从0开始计数的
-        firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH) + 1);
-        lastMonth = typedArray.getInt(R.styleable.DayPickerView_lastMonth, calendar.get(Calendar.MONTH) + 1);
+        firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH));
+        lastMonth = typedArray.getInt(R.styleable.DayPickerView_lastMonth, (calendar.get(Calendar.MONTH) - 1) % MONTHS_IN_YEAR);
         selectedDays = new SelectedDays<>();
         mContext = context;
         mController = datePickerController;
@@ -103,7 +103,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_BEGIN_DAY, selectedFirstDay);
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_SELECTED_LAST_DAY, selectedLastDay);
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_YEAR, year);
-        drawingParams.put(SimpleMonthView.VIEW_PARAMS_MONTH, month - 1);
+        drawingParams.put(SimpleMonthView.VIEW_PARAMS_MONTH, month);
         drawingParams.put(SimpleMonthView.VIEW_PARAMS_WEEK_START, calendar.getFirstDayOfWeek());
         v.setMonthParams(drawingParams);
         v.invalidate();
@@ -115,13 +115,15 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     @Override
     public int getItemCount() {
-        int itemCount = (((mController.getMaxYear() - calendar.get(Calendar.YEAR)) + 1) * MONTHS_IN_YEAR);
+        int safeShow = mController.getMaxYear() - calendar.get(Calendar.YEAR);
+        safeShow = safeShow <= 0 ? 1 : safeShow;
+        int itemCount = ((safeShow + 1) * MONTHS_IN_YEAR);
 
         if (firstMonth != -1)
             itemCount -= firstMonth;
 
         if (lastMonth != -1)
-            itemCount -= (MONTHS_IN_YEAR - lastMonth);
+            itemCount -= (MONTHS_IN_YEAR - lastMonth) - 1;
 
         return itemCount;
     }

@@ -1,5 +1,5 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:calendar="http://schemas.android.com/apk/res-auto"
+    xmlns:calendar="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -10,6 +10,23 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="#fff"
-        calendar:drawRoundRect="true"/>
+        calendar:drawRoundRect="true" />
 
+    <TextView
+        android:id="@+id/sure"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:layout_alignParentBottom="true"
+        android:background="#ffb393"
+        android:gravity="center"
+        android:text="确定"
+        android:textColor="#fff" />
+
+    <TextView
+        android:id="@+id/gone_v"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/sure"
+        android:layout_centerHorizontal="true"
+        android:layout_marginBottom="60dp" />
 </RelativeLayout>
