@@ -1,6 +1,6 @@
 CalendarCheck
 ================
-###Introduction
+### Introduction ###
 
 The source code for this project comes from the **Calendarlistview** project.
 
@@ -8,7 +8,7 @@ it provides a easy way to select dates with a calendar for API 10+. [You can fin
 
 ![CalendarListview GIF](https://github.com/sieml/CalendarCheck/blob/master/demo.gif)
 
-#####The following is changelist:
+##### The following is changelist: #####
 
 
 
@@ -23,6 +23,6 @@ it provides a easy way to select dates with a calendar for API 10+. [You can fin
 
 - Support for reverse selection
 
-###Snapchat
+### Snapchat ###
 
 ![CalendarCheck GIF](https://github.com/sieml/CalendarCheck/blob/master/calendardemo.gif)
