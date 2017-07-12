@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andexert.calendarlistview.library.DayPickerView;
 import com.andexert.calendarlistview.library.SimpleMonthAdapter;
@@ -24,10 +25,6 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
-        dayPickerView = (DayPickerView) findViewById(R.id.pickerView);
-        dayPickerView.setController(this, "zh");
-        //Toast.makeText(this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
         goneV = findViewById(R.id.gone_v);
         View sureV = findViewById(R.id.sure);
         sureV.setOnClickListener(new View.OnClickListener() {
@@ -36,11 +33,15 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
 
             }
         });
+        dayPickerView = (DayPickerView) findViewById(R.id.pickerView);
+        dayPickerView.setController(this, "zh");
+        //Toast.makeText(this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
+
         //TODO 监听确定按钮, 点击之后传送两个日期, 之后发送给网页
         new MilesHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-                //Toast.makeText(MainActivity.this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
+//                Toast.makeText(MainActivity.this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
                 showTip(goneV, null);//todo 不建议使用popupWindow, 因为妨碍输入
             }
         }, 200);
