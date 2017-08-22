@@ -4,4 +4,6 @@
     <color name="normal_day">#ff999999</color>
     <color name="selected_day_background">#FFFFF0E9</color>
     <color name="selected_day_text">#fff2f2f2</color>
+    <color name="def_txt_clr">#ff333333</color>
+    <color name="linked_bg_clr">#FFFFF0E9</color>
 </resources>

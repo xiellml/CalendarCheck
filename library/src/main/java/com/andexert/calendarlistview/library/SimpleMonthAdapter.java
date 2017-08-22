@@ -61,7 +61,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        final SimpleMonthView simpleMonthView = new SimpleMonthView(mContext, typedArray);
+        final SimpleMonthView simpleMonthView = new SimpleMonthView(mContext, "{\"startTime\":\"2017-08-01\",\"endTime\":\"2017-08-08\",\"unUse\":[\"2017-08-03\",\"2017-08-04\",]}", typedArray);
         return new ViewHolder(simpleMonthView, this);
     }
 
@@ -128,18 +128,6 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         return itemCount;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        final SimpleMonthView simpleMonthView;
-
-        public ViewHolder(View itemView, SimpleMonthView.OnDayClickListener onDayClickListener) {
-            super(itemView);
-            simpleMonthView = (SimpleMonthView) itemView;
-            simpleMonthView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
-            simpleMonthView.setClickable(true);
-            simpleMonthView.setOnDayClickListener(onDayClickListener);
-        }
-    }
-
     protected void init() {
         if (typedArray.getBoolean(R.styleable.DayPickerView_currentDaySelected, false))
             onDayTapped(new CalendarDay(System.currentTimeMillis()));
@@ -153,7 +141,12 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     protected void onDayTapped(CalendarDay calendarDay) {
         mController.onDayOfMonthSelected(calendarDay.year, calendarDay.month, calendarDay.day);
-        setSelectedDay(calendarDay);
+        if (true) {
+            selectedDays.setFirst(calendarDay);
+            notifyDataSetChanged();
+        } else {
+            setSelectedDay(calendarDay);
+        }
     }
 
     public void setSelectedDay(CalendarDay calendarDay) {
@@ -175,13 +168,28 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
         notifyDataSetChanged();
     }
 
+    public SelectedDays<CalendarDay> getSelectedDays() {
+        return selectedDays;
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        final SimpleMonthView simpleMonthView;
+
+        public ViewHolder(View itemView, SimpleMonthView.OnDayClickListener onDayClickListener) {
+            super(itemView);
+            simpleMonthView = (SimpleMonthView) itemView;
+            simpleMonthView.setLayoutParams(new AbsListView.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.MATCH_PARENT));
+            simpleMonthView.setClickable(true);
+            simpleMonthView.setOnDayClickListener(onDayClickListener);
+        }
+    }
+
     public static class CalendarDay implements Serializable {
         private static final long serialVersionUID = -5456695978688356202L;
-        private Calendar calendar;
-
         int day;
         int month;//TODO month 是从0开始的
         int year;
+        private Calendar calendar;
 
         public CalendarDay() {
             setTime(System.currentTimeMillis());
@@ -244,10 +252,6 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
             return stringBuilder.toString();
         }
-    }
-
-    public SelectedDays<CalendarDay> getSelectedDays() {
-        return selectedDays;
     }
 
     public static class SelectedDays<K> implements Serializable {

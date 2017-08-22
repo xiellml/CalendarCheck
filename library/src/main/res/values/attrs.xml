@@ -2,7 +2,7 @@
 <resources>
     <declare-styleable name="DayPickerView">
         <attr name="colorCurrentDay" format="color"/>
-        <attr name="colorSelectedDayBackground" format="color"/>
+        <attr name="colorLinkedDaysBg" format="color"/>
         <attr name="colorSelectedDayText" format="color"/>
         <attr name="colorPreviousDay" format="color"/>
         <attr name="colorNormalDay" format="color" />
@@ -12,7 +12,7 @@
         <attr name="textSizeMonth" format="dimension" />
         <attr name="textSizeDayName" format="dimension" />
         <attr name="headerMonthHeight" format="dimension" />
-        <attr name="selectedDayRadius" format="dimension" />
+        <attr name="dayNumHalfWidth" format="dimension" />
         <attr name="calendarHeight" format="dimension" />
         <attr name="enablePreviousDay" format="boolean" />
         <attr name="currentDaySelected" format="boolean" />

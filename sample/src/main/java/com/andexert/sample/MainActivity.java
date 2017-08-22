@@ -19,6 +19,7 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
 
     private DayPickerView dayPickerView;
     private View goneV;
+    private boolean isOnly = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,14 +47,8 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
         }, 200);
     }
 
-
-    private View createPopupContentView(Context context) {
-        final View contentView = LayoutInflater.from(context).inflate(R.layout.popup_empty_content_layout, null);
-        return contentView;
-    }
-
     public PopupWindow showTip(View anchorView, String txt) {
-        final View contentView = createPopupContentView(anchorView.getContext());
+        final View contentView = LayoutInflater.from(anchorView.getContext()).inflate(R.layout.popup_empty_content_layout, null);
         if (txt != null) {
             TextView tipTv = (TextView) contentView.findViewById(R.id.toast_txt_tv);
             tipTv.setText(txt);
@@ -61,6 +56,7 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
         final PopupWindow popupWindow = new PopupWindow(contentView,
                 ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
         popupWindow.setAnimationStyle(R.style.PopupAnimation);
+        popupWindow.setTouchable(false);
         popupWindow.showAsDropDown(anchorView);
         return popupWindow;
     }
@@ -88,8 +84,6 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
     public int getMaxYear() {
         return 2017 * 2017;
     }
-
-    private boolean isOnly = true;
 
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {

@@ -7,10 +7,13 @@
 
     <TextView
         android:id="@+id/toast_txt_tv"
-        android:layout_width="170dp"
-        android:layout_height="50dp"
-        android:background="#000000"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center_horizontal"
+        android:background="@drawable/dialog_rds_4dp"
         android:gravity="center"
+        android:shadowColor="#BB000000"
+        android:shadowRadius="2.75"
         android:text="请选择您的入住日期"
         android:textColor="@android:color/white"
         android:textSize="15sp" />
