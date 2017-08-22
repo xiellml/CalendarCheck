@@ -23,6 +23,6 @@ it provides a easy way to select dates with a calendar for API 10+. [You can fin
 
 - Support for reverse selection
 
-### Snapchat ###
+### Snapshot ###
 
 ![CalendarCheck GIF](https://github.com/sieml/CalendarCheck/blob/master/calendardemo.gif)
