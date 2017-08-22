@@ -30,4 +30,4 @@ it provides a easy way to select dates with a calendar for API 10+. [You can fin
 ### Many days ###
 ![CalendarCheck GIF](https://github.com/sieml/CalendarCheck/blob/master/calendardemo.gif)
 ### One days ###
-![CalendarCheck GIF](https://github.com/sieml/CalendarCheck/blob/master/calendardemo.gif)
+![CalendarCheck GIF](https://github.com/sieml/CalendarCheck/blob/master/calendardemo1.gif)
