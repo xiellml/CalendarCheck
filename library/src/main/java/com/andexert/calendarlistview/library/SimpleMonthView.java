@@ -126,7 +126,7 @@ class SimpleMonthView extends View {
 
     //增加特殊规则的构造方法
     public SimpleMonthView(Context context, String ruleJson, TypedArray typedArray) {
-        this(context, new int[1], ruleJson, typedArray);
+        this(context, new int[3], ruleJson, typedArray);
     }
 
     public SimpleMonthView(Context context, int dateArr[], String json, TypedArray typedArray) {

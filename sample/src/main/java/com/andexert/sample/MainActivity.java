@@ -34,7 +34,12 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
             }
         });
         dayPickerView = (DayPickerView) findViewById(R.id.pickerView);
-        dayPickerView.setController(this, "zh");
+        dayPickerView.setController(this, new int[3], "zh");
+        /*dayPickerView.setController(this, "{\n" +
+                "\tstartTime:'2017-08-022',\n" +
+                "\tendTime:'2017-08-30',\n" +
+                "\tunUse:['2017-08-23','2017-08-24',]\n" +
+                "}", "zh");*/
         //Toast.makeText(this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
 
         //TODO 监听确定按钮, 点击之后传送两个日期, 之后发送给网页

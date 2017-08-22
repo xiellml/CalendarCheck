@@ -35,10 +35,10 @@ import java.util.Locale;
 public class DayPickerView extends RecyclerView {
     protected Context mContext;
     protected SimpleMonthAdapter mAdapter;
-    private DatePickerController mController;
     protected int mCurrentScrollState = 0;
     protected long mPreviousScrollPosition;
     protected int mPreviousScrollState = 0;
+    private DatePickerController mController;
     private TypedArray typedArray;
     private OnScrollListener onScrollListener;
 
@@ -59,11 +59,19 @@ public class DayPickerView extends RecyclerView {
         }
     }
 
-    public void setController(DatePickerController mController, String lang) {
+    public void setController(DatePickerController mController, int dateArr[], String lang) {
         Locale newLocale = new Locale(lang);
         Locale.setDefault(newLocale);
         this.mController = mController;
-        setUpAdapter();
+        setUpAdapter(dateArr);
+        setAdapter(mAdapter);
+    }
+
+    public void setController(DatePickerController mController, String ruleJson, String lang) {
+        Locale newLocale = new Locale(lang);
+        Locale.setDefault(newLocale);
+        this.mController = mController;
+        setUpAdapter(ruleJson);
         setAdapter(mAdapter);
     }
 
@@ -89,9 +97,16 @@ public class DayPickerView extends RecyclerView {
     }
 
 
-    protected void setUpAdapter() {
+    protected void setUpAdapter(int[] dateArr) {
         if (mAdapter == null) {
-            mAdapter = new SimpleMonthAdapter(getContext(), mController, typedArray);
+            mAdapter = new SimpleMonthAdapter(getContext(), dateArr, mController, typedArray);
+        }
+        mAdapter.notifyDataSetChanged();
+    }
+
+    protected void setUpAdapter(String ruleJson) {
+        if (mAdapter == null) {
+            mAdapter = new SimpleMonthAdapter(getContext(), ruleJson, mController, typedArray);
         }
         mAdapter.notifyDataSetChanged();
     }

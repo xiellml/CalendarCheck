@@ -26,6 +26,7 @@ package com.andexert.calendarlistview.library;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +39,7 @@ import java.util.Date;
 import java.util.HashMap;
 
 public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.ViewHolder> implements SimpleMonthView.OnDayClickListener {
-    protected static final int MONTHS_IN_YEAR = 12;
+    private static final int MONTHS_IN_YEAR = 12;
     private final TypedArray typedArray;
     private final Context mContext;
     private final DatePickerController mController;
@@ -46,11 +47,29 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
     private final SelectedDays<CalendarDay> selectedDays;
     private final Integer firstMonth;
     private final Integer lastMonth;
+    private final int[] dateArr;
+    private String ruleJson = null;
 
-    public SimpleMonthAdapter(Context context, DatePickerController datePickerController, TypedArray typedArray) {
+    public SimpleMonthAdapter(Context context, int date[], DatePickerController datePickerController, TypedArray typedArray) {
         this.typedArray = typedArray;
+        this.dateArr = date;
         calendar = Calendar.getInstance();
-        //todo Calendar日期的月份是从0开始计数的
+        this.ruleJson = null;
+        //Calendar日期的月份是从0开始计数的
+        firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH));
+        lastMonth = typedArray.getInt(R.styleable.DayPickerView_lastMonth, (calendar.get(Calendar.MONTH) - 1) % MONTHS_IN_YEAR);
+        selectedDays = new SelectedDays<>();
+        mContext = context;
+        mController = datePickerController;
+        init();
+    }
+
+    public SimpleMonthAdapter(Context context, String ruleJson, DatePickerController datePickerController, TypedArray typedArray) {
+        this.typedArray = typedArray;
+        this.dateArr = new int[3];//单个年月日规则; 在此处没有任何作用
+        calendar = Calendar.getInstance();
+        this.ruleJson = ruleJson;
+        //Calendar日期的月份是从0开始计数的
         firstMonth = typedArray.getInt(R.styleable.DayPickerView_firstMonth, calendar.get(Calendar.MONTH));
         lastMonth = typedArray.getInt(R.styleable.DayPickerView_lastMonth, (calendar.get(Calendar.MONTH) - 1) % MONTHS_IN_YEAR);
         selectedDays = new SelectedDays<>();
@@ -61,7 +80,12 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i) {
-        final SimpleMonthView simpleMonthView = new SimpleMonthView(mContext, "{\"startTime\":\"2017-08-01\",\"endTime\":\"2017-08-08\",\"unUse\":[\"2017-08-03\",\"2017-08-04\",]}", typedArray);
+        SimpleMonthView simpleMonthView = null;
+        if (!TextUtils.isEmpty(ruleJson)) {
+            simpleMonthView = new SimpleMonthView(mContext, ruleJson, typedArray);
+        } else {
+            simpleMonthView = new SimpleMonthView(mContext, dateArr, null, typedArray);
+        }
         return new ViewHolder(simpleMonthView, this);
     }
 
@@ -141,7 +165,7 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
 
     protected void onDayTapped(CalendarDay calendarDay) {
         mController.onDayOfMonthSelected(calendarDay.year, calendarDay.month, calendarDay.day);
-        if (true) {
+        if (!TextUtils.isEmpty(ruleJson)) {
             selectedDays.setFirst(calendarDay);
             notifyDataSetChanged();
         } else {
@@ -239,18 +263,18 @@ public class SimpleMonthAdapter extends RecyclerView.Adapter<SimpleMonthAdapter.
             return calendar.getTime();
         }
 
+        public Calendar getCalendar() {
+            if (calendar == null) {
+                calendar = Calendar.getInstance();
+            }
+            calendar.set(year, month, day);
+            return calendar;
+        }
+
         @Override
         public String toString() {
-            final StringBuilder stringBuilder = new StringBuilder();
-            stringBuilder.append("{ year: ");
-            stringBuilder.append(year);
-            stringBuilder.append(", month: ");
-            stringBuilder.append(month);
-            stringBuilder.append(", day: ");
-            stringBuilder.append(day);
-            stringBuilder.append(" }");
-
-            return stringBuilder.toString();
+            return Integer.toString(year) +
+                    "-" + month + "-" + day;
         }
     }
 
