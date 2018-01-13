@@ -2,6 +2,7 @@ package com.andexert.sample;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,43 +12,49 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.PopupWindow;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.andexert.calendarlistview.library.DayPickerView;
 import com.andexert.calendarlistview.library.SimpleMonthAdapter;
 
+/**
+ * 这个是单选日历输入:
+ * dayPickerView.setController(this, "{\n" +
+ * "\tstartTime:'2017-08-022',\n" +
+ * "\tendTime:'2017-08-30',\n" +
+ * "\tunUse:['2017-08-23','2017-08-24',]\n" +
+ * "}", "zh");
+ */
 public class MainActivity extends Activity implements com.andexert.calendarlistview.library.DatePickerController {
 
     private DayPickerView dayPickerView;
     private View goneV;
     private boolean isOnly = true;
+    private String msg;
+    private View sureV;
+    private PopupWindow popupWindow;
+    private PopupWindow popupWindow1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         goneV = findViewById(R.id.gone_v);
-        View sureV = findViewById(R.id.sure);
+        sureV = findViewById(R.id.sure);
         sureV.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                Toast.makeText(MainActivity.this, "Hello man! Selected Date(s) is: " + msg, Toast.LENGTH_SHORT).show();
             }
         });
+        sureV.setEnabled(false);
         dayPickerView = (DayPickerView) findViewById(R.id.pickerView);
         dayPickerView.setController(this, new int[3], "zh");
-        /*dayPickerView.setController(this, "{\n" +
-                "\tstartTime:'2017-08-022',\n" +
-                "\tendTime:'2017-08-30',\n" +
-                "\tunUse:['2017-08-23','2017-08-24',]\n" +
-                "}", "zh");*/
-        //Toast.makeText(this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
 
-        //TODO 监听确定按钮, 点击之后传送两个日期, 之后发送给网页
         new MilesHandler().postDelayed(new Runnable() {
             @Override
             public void run() {
-//                Toast.makeText(MainActivity.this, "请选择您的入住日期", Toast.LENGTH_LONG).show();
-                showTip(goneV, null);//todo 不建议使用popupWindow, 因为妨碍输入
+                popupWindow = showTip(goneV, "请选择您的入住日期");
             }
         }, 200);
     }
@@ -67,42 +74,26 @@ public class MainActivity extends Activity implements com.andexert.calendarlistv
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
-
-    @Override
     public int getMaxYear() {
         return 2017 * 2017;
     }
 
     @Override
     public void onDayOfMonthSelected(int year, int month, int day) {
-        //todo 隐藏/销毁 第一次的toast(往左下方移动);
-        Log.e("Day Selected", day + " / " + month + " / " + year);
         if (isOnly) {
-            showTip(goneV, "请选择您的入住日期");
+            if (popupWindow != null) popupWindow.dismiss();
+            popupWindow1 = showTip(goneV, "请选择您的离开日期");
             isOnly = false;
         }
+        Log.e("Day Selected", day + " / " + month + " / " + year);
     }
 
     @Override
     public void onDateRangeSelected(SimpleMonthAdapter.SelectedDays<SimpleMonthAdapter.CalendarDay> selectedDays) {
-        //todo 隐藏/销毁 第二次的toast(往左下方移动); 并且使确定按钮可用;
-        Log.e("Date range selected", selectedDays.getFirst().toString() + " --> " + selectedDays.getLast().toString());
+        msg = selectedDays.getFirst().toString() + " --> " + selectedDays.getLast().toString();
+        Log.e("Date range selected", msg);
+        if (popupWindow1 != null) popupWindow1.dismiss();
+        sureV.setEnabled(true);
+        sureV.setBackgroundColor(Color.parseColor("#ffff6827"));
     }
 }
