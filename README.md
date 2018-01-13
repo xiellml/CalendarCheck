@@ -6,9 +6,7 @@ The source code for this project comes from the **Calendarlistview** project.
 
 it provides a easy way to select dates with a calendar for API 10+. [You can find a sample](https://github.com/traex/CalendarListview/blob/master/sample/) that show how to add DatePickerView to your layout without customization.
 
-![CalendarListview GIF](https://github.com/sieml/CalendarCheck/blob/master/demo.gif)
-
-##### The following is changelist: #####
+## The following is changelist ##
 
 
 
@@ -18,7 +16,6 @@ it provides a easy way to select dates with a calendar for API 10+. [You can fin
 
 - Change the renaming of related variables
 
-
 - Support the following system language to set the date text (you need to set a variable beforehand)
 
 - Support for reverse selection
@@ -27,7 +24,7 @@ it provides a easy way to select dates with a calendar for API 10+. [You can fin
 
 ## Snapshot ##
 
-### Many days ###
+### Choose Many days ###
 ![CalendarCheck GIF](https://github.com/sieml/CalendarCheck/blob/master/calendardemo.gif)
-### One day ###
+### Choose One day ###
 ![CalendarCheck GIF](https://github.com/sieml/CalendarCheck/blob/master/calendardemo1.gif)
