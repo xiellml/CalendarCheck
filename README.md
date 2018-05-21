@@ -4,7 +4,7 @@ CalendarCheck
 
 The source code for this project comes from the **Calendarlistview** project.
 
-it provides a easy way to select dates with a calendar for API 10+. [You can find a sample](https://github.com/traex/CalendarListview/blob/master/sample/) that show how to add DatePickerView to your layout without customization.
+it provides a easy way to select dates with a calendar for API 10+. [You can find a sample](https://github.com/traex/CalendarListview/blob/master/sample/) that show how to add DatePickerView to your layout with default style.
 
 ## The following is changelist ##
 
