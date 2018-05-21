@@ -9,18 +9,18 @@ it provides a easy way to select dates with a calendar for API 10+. [You can fin
 ## The following is changelist ##
 
 
+- Rename some important variables
 
-- Support tag above today and selected dates
+- Support to choose single day or multiple days
 
-- Support the background of the selected date overall highlighting
+- Support tag above today and clicked dates
 
-- Change the renaming of related variables
+- Support horizontal highlighting of the selected range
 
-- Support the following system language to set the date text (you need to set a variable beforehand)
+- Support localized language (you need to set a variable beforehand)
 
-- Support for reverse selection
+- Support reverse selection
 
-- Support for a single day
 
 ## Snapshot ##
 
